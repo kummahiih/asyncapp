@@ -45,12 +45,12 @@ class AsyncLinuxAppRunner:
                     self._exit_fut)
             except RuntimeError as runtime_error:
                 if self.is_terminating:
-                    self._logger.exception('excetion while terminating. should be ok', exception = e)
+                    self._logger.exception('excetion while terminating. should be ok')
                 else:
                     raise runtime_error            
             self._logger.info('loophandler done')
         except Exception as e:
-             self._logger.exception("unhandled exception", exception = e) 
+             self._logger.exception("unhandled exception") 
              self.all_ok = False
         finally:
             self._logger.info('finalization starting')
@@ -85,7 +85,7 @@ class AsyncLinuxAppRunner:
         try:
             self.asyncApp.on_completed(self._loop)            
         except Exception as e:
-            self._logger.exception("unhandled exception on shutdown. program shutdown anyway.", exception = e) 
+            self._logger.exception("unhandled exception on shutdown. program shutdown anyway.") 
             self.asyncApp.on_exit(False)   
         
     def interrupt(self):
@@ -94,7 +94,7 @@ class AsyncLinuxAppRunner:
         try:
             self.asyncApp.on_interrupt(self._loop, self._exit_fut)            
         except Exception as e:
-            self._logger.exception("unhandled exception on interrupt. program shutdown.", exception = e) 
+            self._logger.exception("unhandled exception on interrupt. program shutdown.") 
             self.asyncApp.on_exit(False)
             
     
@@ -106,7 +106,7 @@ class AsyncLinuxAppRunner:
         try:
             self.asyncApp.on_terminate(self._loop, self._exit_fut)            
         except Exception as e:
-            self._logger.exception("unhandled exception on terminate. program shutdown.", exception = e) 
+            self._logger.exception("unhandled exception on terminate. program shutdown.") 
             self.asyncApp.on_exit(False)
 
            
