@@ -2,6 +2,9 @@
 Yet another Python 3 async app framework for Linux (Python 3 asyncio studying project).
 Could ease your burden when creating asyncronoys python 3 apps for Linux.
 
+See  EchoApp.py for an usage example and asyncapp.AsyncApp class for more points to overwrite. 
+The tests are written into AsyncLinuxAppTest.py and passed when I ran em in Ubuntu using Python 3.5.2.
+
 Things I tried and managed to somehow achieve: 
  * done as a library
  * lightweight to use, testable and easily overwritable: dependency injection, inversion of control and composition instead of inheritance
@@ -14,8 +17,6 @@ Things I tried and managed to somehow achieve:
  * overritable top level logging
  * coroutine cancellation via program exit value future
 
-See  EchoApp.py for an usage example and asyncapp.AsyncApp class for more points to overwrite. 
-The tests are written into AsyncLinuxAppTest.py and passed when I ran em in Ubuntu using Python 3.5.2.
 
 Things to do:
  * the usage of this library is not fluent enough. You know what I mean.
