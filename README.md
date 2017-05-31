@@ -3,6 +3,7 @@ Yet another Python 3 async app framework for Linux (Python 3 asyncio studying pr
 Could ease your burden when creating asyncronoys python 3 apps for Linux.
 
 Things I tried and managed to somehow achieve: 
+ * done as a library
  * lightweight to use, testable and easily overwritable: dependency injection, inversion of control and composition instead of inheritance
  * tests done and done by using unittest
  * tests done by using unittest.Mock rather than unittest.patch
