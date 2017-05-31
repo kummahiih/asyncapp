@@ -45,5 +45,5 @@ if __name__ == '__main__':
     handler = EchoApp(logger)
     
     app = AsyncLinuxAppRunner(logger, handler)
-app.run()
+    app.run()
 ```
