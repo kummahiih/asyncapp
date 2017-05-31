@@ -34,6 +34,8 @@ class AsyncApp:
         called when the user wants to interrupt and close the program. 
         cancel tasks, clean all resources, be nice.
         """
+        if fut.cancelled(): #fut already cancelled
+            return
         loop.call_soon_threadsafe(fut.cancel)
         if sys.version_info.minor >= 6:
             loop.run_until_complete(loop.shutdown_asyncgens())
@@ -43,8 +45,8 @@ class AsyncApp:
         called when the user wants to terminate and close the program in not so nice way. 
         just stop the event loop
         """
-        def terminate(self, loop, fut):
-            loop.call_soon_threadsafe(loop.stop)
+        
+        loop.call_soon_threadsafe(loop.stop)
         
     def on_exit(self, all_ok):
         """
