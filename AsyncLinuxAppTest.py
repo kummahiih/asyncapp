@@ -12,6 +12,11 @@ import logging
 import sys
 
 import traceback
+import os
+import signal
+from _ast import Await
+from logging import raiseExceptions
+
 
 class AsyncLinuxAppRunner(unittest.TestCase):
     
@@ -194,13 +199,97 @@ class AsyncLinuxAppRunner(unittest.TestCase):
             call('interrupting execution')
         ])
         logger.exception.assert_not_called()
-        
-
     
+    
+    class WaitingHandler(asyncapp.AsyncApp):
+        def __init__(self, aLogger, coro):
+            super().__init__(aLogger)
+            self.coro = coro
+
+        def on_run(self, loop, fut):
+            print(self.coro)
+            print("1")
+                
+            async def wait():
+                while not fut.done():
+                    print('looping')
+                    await asyncio.sleep(1)
+            
+            loop.run_until_complete(
+                asyncio.gather(
+                    wait(),
+                    self.coro()
+                    )
+                )
+            print('done')
+        
+        def on_interrupt(self, loop, fut):
+            self.logger.info('on_interrupt called')
+            super().on_interrupt(loop,fut)
+            
+        def on_terminate(self, loop, fut):
+            self.logger.info('on_terminate called')
+            super().on_terminate(loop,fut)
+            
+        def on_exit(self,all_ok):   
+            self.logger.info("on_exit called")                
+            return
+
+    def test_logger_on_interrupt(self):
+        logger =  Mock(spec=logging.Logger)
+        
+        tested = None
+        
+        async def interrupt():
+            print('interrupt')
+            await asyncio.sleep(2, self.loop)
+            tested.interrupt()
+        
+        handler = self.WaitingHandler(logger, interrupt)    
+        tested = asyncapp.AsyncLinuxAppRunner(logger, handler, loop = self.loop)
+        
+        tested.run()
 
         
-    
-  
+        logger.info.assert_has_calls([
+            call('instance created'),
+            call('loophandler starting'),
+            call('interrupting execution'),
+            call('on_interrupt called'),
+            call('execution completed'),
+            call('loophandler done'),
+            call('finalization starting'),
+            call('finalization done'),
+            call('on_exit called')
+        ])   
+        
+    def test_logger_on_terminate(self):
+        logger =  Mock(spec=logging.Logger)
+        
+        tested = None
+        
+        async def terminate():
+            print('terminate')
+            await asyncio.sleep(2, self.loop)
+            tested.terminate()
+        
+        handler = self.WaitingHandler(logger, terminate)    
+        tested = asyncapp.AsyncLinuxAppRunner(logger, handler, loop = self.loop)
+        
+        tested.run()
+        
+        logger.info.assert_has_calls([
+            call('instance created'),
+            call('loophandler starting'),
+            call('terminating execution'),
+            call('on_terminate called'),
+            call('loophandler done'),
+            call('finalization starting'),
+            call('finalization done'),
+            call('on_exit called')
+        ]) 
+        
+        
             
 if __name__ == '__main__':
     
