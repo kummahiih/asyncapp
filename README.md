@@ -22,6 +22,7 @@ Things to do:
  * the usage of this library is not fluent enough. You know what I mean.
  * asyncapp.AsyncLinuxAppRunner is messy. Getters, abstract base class, ... ? 
  * study how similar things are done in windows and try to write a class named asyncapp.AsyncWindowsAppRunner
+ * rename variables. now there are some things on the code which are not consisten
 
 
 I know that you are lazy so here is the content of the EchoApp.py:
