@@ -19,34 +19,44 @@ Things I tried and managed to somehow achieve:
 
 
 Things to do:
+ * type checks
  * the usage of this library is not fluent enough. You know what I mean.
- * asyncapp.AsyncLinuxAppRunner is messy. Getters, abstract base class, ... ? 
- * study how similar things are done in windows and try to write a class named asyncapp.AsyncWindowsAppRunner
- * rename variables. now there are some things on the code which are not consistent
+ * asyncapp.AsyncLinuxAppSession is messy. Getters, abstract base class, ... ? 
+ * study how similar things are done in windows and try to write a class named asyncapp.AsyncWindowsAppSession
 
 
 I know that you are lazy so here is the content of the EchoApp.py:
 ```python
-from asyncapp import *
 import asyncio
+from asyncapp import AsyncApp, get_default_logger, AsyncLinuxAppSession
 
-async def echo(fut):
-    while not fut.done():
-        data = input()
-        await asyncio.sleep(2.9) #one km distance       
-        if data == 'quit':
-            fut.set_result(True)
-        print(data)
+
 
 class EchoApp(AsyncApp):
-    def on_run(self, loop, fut):
+    '''
+    The input is echoed to the user with 2.9 second delay
+    until the user writes 'quit' or the input stream stops.
+    '''
+    def on_run(self, loop: asyncio.AbstractEventLoop, fut: asyncio.Future):
+        async def echo(fut: asyncio.Future):
+            while not fut.done():
+                try:
+                    data = input()
+                    if data == 'quit':
+                        fut.set_result(True)
+                    else:
+                        await asyncio.sleep(2.9)    # one km distance
+                    print(data)
+                except EOFError:
+                    fut.set_result(True)
+
         loop.run_until_complete(echo(fut))
 
 
 if __name__ == '__main__':
-    logger = get_default_logger("echoApp")
-    handler = EchoApp(logger)
-    
-    app = AsyncLinuxAppRunner(logger, handler)
-    app.run()
+    execution_logger = get_default_logger("echoApp")
+    app = EchoApp(execution_logger)
+
+    session = AsyncLinuxAppSession(execution_logger, app)
+    session.run()
 ```
