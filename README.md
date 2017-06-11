@@ -5,19 +5,6 @@ Could ease your burden when creating asyncronoys python 3 apps for Linux.
 See  EchoApp.py for an usage example and asyncapp.AsyncApp class for more points to overwrite. 
 The tests are written into AsyncLinuxAppTest.py and passed when I ran em in Ubuntu using Python 3.5.2.
 
-Things I tried and managed to somehow achieve: 
- * done as a library
- * lightweight to use, testable and easily overwritable: dependency injection, inversion of control and composition instead of inheritance
- * tests done and done by using unittest
- * tests done by using unittest.Mock rather than unittest.patch
- * unit tests done for the asyncronous parts as well
- * overwritable SIGINT and SIGTERM signal handlers
- * program exit value related behaviour
- * top level exception handling
- * overritable top level logging
- * coroutine cancellation via program exit value future
-
-
 Things to do:
  * type checks
  * the usage of this library is not fluent enough. You know what I mean.
